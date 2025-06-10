@@ -829,7 +829,166 @@ Lab:
  Create Posts Components and list all Posts
 ...
 
+.............................................................................................
+			     Component Types and Rendering Types
+.....................................................................................
 
+Rendering is nothing but page preparation (html creation).
+
+How to create html and where to create Html?
+
+Where:
+ rendering can take place in the server or on the client.
+
+When:
+  At Server side:
+   It can happen either ahead of time at build time.
+   or on every Request at runtime.
+
+With next js , two types of rendering methods are available.
+
+1.Server-side rendering
+   1.0. Request time
+   1.1. Static site Generation - build time
+   1.2. ISR - Incremental Static rendering - first Build time and later runtime.
+
+2.Client-side Rendering
+   Preparing portion of page at client side , which is similar to SPA Apps.
+
+Component types:
+ Based on Rendering, we can classify the component into two category.
+
+1.Server Component
+   Server components are rendered at server side
+2.Client components
+   Clients components are rendered at client side
+
+      By default all components are "Server Rendered Components"
+
+   page,layouts,templates,notfound,loading,default all are server components only
+
+Even When create custom components
+
+export default function Greet(props) {
+     return <>
+        <h1>{props.message}</h1>
+     </>
+}
+.....................................................................................
+			 	Client Component
+....................................................................................
+
+
+Generally React application is component driven....
+
+Component which may have logic to interact with user like button clicks,typing,animations,data fetch at client side,hooks, any dom manipulation......
+
+The components can be co-located..
+
+Client components allow us to write interactive UI that is prendered on the server and can use client javascript to run in the browser.
+
+Advantages of client Rendering:
+
+1.Interactivity
+   Client components uses "state,effects,event listener" , meaning they can provide immediate feedback to the user and update the UI.
+
+2.Browser APIs:
+    Client components have access the browser apis like Storage,geo location....
+
+.....................................................................................
+			 	Client Component
+....................................................................................
+
+
+Generally React application is component driven....
+
+Component which may have logic to interact with user like button clicks,typing,animations,data fetch at client side,hooks, any dom manipulation......
+
+The components can be co-located..
+
+Client components allow us to write interactive UI that is prendered on the server and can use client javascript to run in the browser.
+
+Advantages of client Rendering:
+
+1.Interactivity
+   Client components uses "state,effects,event listener" , meaning they can provide immediate feedback to the user and update the UI.
+
+2.Browser APIs:
+    Client components have access the browser apis like Storage,geo location....
+
+
+
+src/app/review/components/review.jsx
+import { useState } from "react"
+
+const Review = props => {
+    const [like, setLike] = useState(0)
+    return <div>
+            <h1>Like {like}</h1>
+    </div>
+}
+export { Review }
+
+Ecmascript file had an error
+> 1 | import { useState } from "react"
+    |          ^^^^^^^^
+  2 |
+  3 | const Review = props => {
+  4 |     const [like, setLike] = useState(0)
+
+You're importing a component that needs `useState`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+
+ Learn more: https://nextjs.org/docs/app/building-your-application/rendering/client-components
+
+Why this error?
+
+If any component having "hooks,listners,state",then it cant be compiled at server, now need to tell to the next js compiler, you have to compile or render this code in client side.
+
+How to tell?
+ we have to use a directive.
+
+Directive is instruction to the compiler.
+
+"use client" - directive
+
+eg:
+src/app/review/components/review.jsx
+
+'use client'
+
+import { useState } from "react"
+const Review = props => {
+    const [like, setLike] = useState(0)
+    return <div>
+        <h1>Like {like}</h1>
+        <button onClick={() => {
+            setLike(like + 1)
+        }}>+</button>
+    </div>
+}
+export { Review }
+
+src/app/review/page.js
+import { Review } from "./components/Review";
+
+export default function ReviewPage(){
+    return <div>
+        <Review/>
+    </div>
+}
+
+How to know the client component?
+
+if component has 
+
+1.useState hook
+2.Any listener
+3.useEffect hook
+4.Browser apis
+5.state declaration
+
+Task:
+  CURD operation using Array:
 
 
 

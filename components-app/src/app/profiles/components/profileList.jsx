@@ -6,7 +6,7 @@ export default function ProfileList() {
         <div>
             {PROFILES.map(profile => {
                 return <section key={profile.id}>
-                    <h1>Id : {profile.id}</h1>
+                    <h1 className="text-4xl font-extrabold text-gray-900"> {profile.id}</h1>
                     <h2>{profile.name}</h2>
                     <h2>{profile.email}</h2>
                     <h2>{profile.phone}</h2>
