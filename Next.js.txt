@@ -685,4 +685,158 @@ src/app/dashboard/settings/password/page.js
 export default function Password(){
     return <h2>Password Page</h2>
 }
+..............................................................................................................................................................
+		Folder is created what if the page.js is not created - not-found.js
+...............................................................................................................................................................
+eg:
+
+src/app/profile
+
+http://localhost:3000/profile
+
+404
+This page could not be found.
+
+if there is no page.js , then next will show the error page automatically which is mapped against not-found.js.
+
+if you dont want default error page and its content, then you can override "not-found.js"
+
+src/app/not-found.js
+export default function NotFound() {
+    return <h1>Oops,Something went Wrong</h1>
+}
+
+..........................................................................................................................................................
+						 Public Access Route
+if you have different name other than page.js, it will not be available for public access.
+
+app/settings/config.js
+
+http://localhost:3000/settings/config - It will throw error..
+............................................................................................................................................................
+
+....................................................................................................................................................
+		 			Component Driven Archiecture
+....................................................................................................................................................
+
+Layout is container, Page is mapped against route segment, which displays UI.
+
+Can Page Hold other Components?
+
+    Layout
+          | 
+       Page
+            |
+ UserProfile
+     |
+    UserList
+      |
+      UserItem
+G:\IBM\2025\June\NextJs>npx create-next-app@latest
+√ What is your project named? ... components-app
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+√ What import alias would you like configured? ... @/*
+Creating a new Next.js app in G:\IBM\2025\June\NextJs\components-app.
+
+....................................................................................................................................................
+		 			Component Driven Archiecture
+....................................................................................................................................................
+
+Layout is container, Page is mapped against route segment, which displays UI.
+
+Can Page Hold other Components?
+
+    Layout
+          | 
+       Page
+            |
+ UserProfile
+     |
+    UserList
+      |
+      UserItem
+G:\IBM\2025\May\nextjs>npx create-next-app@latest
+√ What is your project named? ... next-components
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+√ What import alias would you like configured? ... @/*
+Creating a new Next.js app in G:\IBM\2025\May\nextjs\next-components.
+
+Co-location:
+
+     In addition to special files, you have the option to colocate your own files (e.g. components, styles, tests, etc) inside folders in the app directory.
+
+src/app/profile/components/ProfileList.jsx
+
+export default function ProfileList(props){
+
+    return <ul>
+          {
+            props.data.map(profile=>{
+                return <li key={profile.id}>
+                    <span>{profile.name}</span>
+                </li>
+            })
+          }
+    </ul>
+}
+
+src/app/profile/components/Profile.jsx
+
+//import alises syntax from Next.js
+import { PROFILES } from "@/app/mock-data/profiles";
+// import { PROFILES } from "../../mock-data/profiles";
+// import ProfileList from "./ProfileList";
+import ProfileList from '@/app/profile/components/ProfileList'
+
+export function Profile() {
+    return <>
+        <ProfileList data={PROFILES} />
+    </>
+}
+
+src/app/profile/page.js
+// import { Profile } from "@/app/pcomponents/Profile"
+import { Profile } from '@/app/profile/components/Profile'
+
+export default function ProfilePage() {
+    return <div>
+        <Profile />
+    </div>
+}
+
+src/app/profile/layout.js
+
+export default function ProfileLayout({children}){
+    return <div>
+         {children}
+    </div>
+}
+
+Lab:
+
+ Create Posts Components and list all Posts
+...
+
+
+
+
+
+
+
+
+
+
+
 
