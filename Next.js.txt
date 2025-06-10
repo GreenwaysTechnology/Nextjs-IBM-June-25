@@ -517,4 +517,172 @@ function Tab(props){
 <Tab>
     <Grid/> -  Component as Prop
 <Tab>
+......................................................................***********************************..................
+.....................................................................................
+			 Every thing is component  in Next.js
+....................................................................................
+
+Page Component: - page.js
+  It is place holder component which displays ui.
+
+Layout Component:
+  It is container component which holds Page Component
+
+
+   layout - parent
+	  ------------------------------
+          |                             |
+                      Page -child |
+          |                             |
+          |                             |
+          |                             |
+           -----------------------------
+
+<Layout>
+   <Page/>
+</Layout>
+
+How to declare components?
+
+ 1.every component must be "functional component" - No Class Component.
+ 2.every in built component (page,layout...)  must be exported using "export default" only.
+ 3.Every Next application must have "root layout" src/app/layout.js
+ 4.Every Next application may have  "home/landing page" src/app/page.js
+ 5.Component Name can be any thing like HomePage,Home,MyHomePage,MyLayout etc..
+
+How to create Page and layout Components ?
+
+src/page.js
+
+function Home() {
+  //you must return jsx 
+  return <div>
+    <h1>Home Page</h1>
+  </div>
+}
+
+export default Home;
+
+src/app/layout.js
+export default function RootLayout(props) {
+    return <html lang="en">
+        <body>
+            {props.children}
+        </body>
+    </html>
+}
+
+								Routing
+.............................................................................................................................................................
+
+Routing is nothing but mapping resources against url.
+
+Types of Routing:
+
+1.page routing
+    It is old form of routing pattern, now it is not used
+   page routing was available before next.js version 12
+
+2.app routing
+    It is modern form of routing pattern, now it is heavily used
+    app routing has been available from next.js version 13 onwards
+
+Routing is enabled by mapping "folder" against url
+.............................................................................................
+			  Nested Routing and Segments
+.............................................................................................
+
+
+G:\IBM\2025\June\NextJs>npx create-next-app@latest
+√ What is your project named? ... core-routing
+√ Would you like to use TypeScript? ... No / Yes
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+√ What import alias would you like configured? ... @/*
+Creating a new Next.js app in G:\IBM\2025\June\NextJs\core-routing.
+
+...........................................................................................................................................................
+
+							Nested Folders and Routing
+..........................................................................................................................................................
+
+src/app/welcome/page.js
+
+export default function WelcomePage(){
+    return <h1>Welcome Page</h1>
+}
+
+http://localhost:3000/welcome -----> it will show page.js content of welcome/page.js
+
+src/app/about/page.js
+
+export default function About(){
+    return <h2>About</h2>
+}
+http://localhost:3000/about - it will show page.js and content of about/page.js
+
+Nested Layout:
+  
+src/app/layout.js - Root Layout.
+
+ Every Next app must have one single root layout.	
+
+src/app/welcome/layout.js  -Nested layout.
+//nested layout.
+
+export default function WelcomeLayout({ children }) {
+    return <div id="welcome layout">
+        {children}
+    </div>
+}
+
+Note:
+ inside nested folder, layout.js is optional but inside root folder layout.js is required
+ page.js is required for every folder.
+
+.............................................................................................................................................................
+				  Deep Nesting
+................................................................................................................................................................................................
+
+Dashboard:
+
+src/app/dashboard/layout.js
+export default function DashboardLayout({ children }) {
+    return <div id="dashboardLayout">
+        {children}
+    </div>
+}
+src/app/dashboard/page.js
+export default function Dashboard(){
+    return <h1>Dashboard Page</h1>
+}
+
+src/app/dashboard/settings/layout.js
+export default function SettingsLayout({ children }) {
+    return <div id="settingsLayout">
+        {children}
+    </div>
+}
+src/app/dashboard/settings/page.js
+export default function Settings() {
+    return <>
+        <h1> Settings</h1>
+    </>
+}
+
+src/app/dashboard/settings/password/layout.js
+export default function PasswordLayout({ children }) {
+    return <div id="passwordLayout">
+        {children}
+    </div>
+}
+
+src/app/dashboard/settings/password/page.js
+export default function Password(){
+    return <h2>Password Page</h2>
+}
 
