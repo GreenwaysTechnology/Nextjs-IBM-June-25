@@ -606,7 +606,6 @@ G:\IBM\2025\June\NextJs>npx create-next-app@latest
 Creating a new Next.js app in G:\IBM\2025\June\NextJs\core-routing.
 
 ...........................................................................................................................................................
-
 							Nested Folders and Routing
 ..........................................................................................................................................................
 
@@ -646,7 +645,7 @@ Note:
 
 .............................................................................................................................................................
 				  Deep Nesting
-................................................................................................................................................................................................
+............................................................................................................................................................
 
 Dashboard:
 
@@ -895,30 +894,9 @@ Advantages of client Rendering:
 2.Browser APIs:
     Client components have access the browser apis like Storage,geo location....
 
-.....................................................................................
-			 	Client Component
-....................................................................................
-
-
-Generally React application is component driven....
-
-Component which may have logic to interact with user like button clicks,typing,animations,data fetch at client side,hooks, any dom manipulation......
-
-The components can be co-located..
-
-Client components allow us to write interactive UI that is prendered on the server and can use client javascript to run in the browser.
-
-Advantages of client Rendering:
-
-1.Interactivity
-   Client components uses "state,effects,event listener" , meaning they can provide immediate feedback to the user and update the UI.
-
-2.Browser APIs:
-    Client components have access the browser apis like Storage,geo location....
-
-
 
 src/app/review/components/review.jsx
+
 import { useState } from "react"
 
 const Review = props => {
@@ -990,7 +968,338 @@ if component has
 Task:
   CURD operation using Array:
 
+Solution:
+'use client'
 
+import { useState } from "react"
+
+export default function Post(props) {
+    const [posts, setPosts] = useState([
+        { id: 1, title: 'Post 1', body: 'this is first Post' },
+        { id: 2, title: 'Post 2', body: 'this is second Post' }
+    ])
+    //To handle submitt button either add or update
+    const [isEditing, setIsEditing] = useState(false)
+
+    //To handle form : to add new post into list
+    const [form, setForm] = useState({ title: '', body: '', id: null })
+
+    //Listeners : To save or update Post
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        isEditing ? updatePost() : addPost()
+    }
+    //
+    const updatePost = () => {
+        //array update
+        setPosts(posts.map(post => (post.id === form.id ? form : post)))
+        //Reset/clear the form
+        setForm({ title: '', body: '', id: null })
+        //reset add 
+        setIsEditing(false)
+    }
+    const addPost = () => {
+        //new Post object
+        const newPost = { id: Date.now(), title: form.title, body: form.body }
+        //add post into posts array
+        setPosts([...posts, newPost])
+        //Reset/clear the form
+        setForm({ title: '', body: '', id: null })
+    }
+
+    //Edit Post
+    const handleEdit = (post) => {
+        console.log(post)
+        //load into form fields
+        setForm({ title: post.title, body: post.body, id: post.id })
+        //reset Flag from add to edit
+        setIsEditing(true)
+    }
+    //Delete Post
+    const handleDelete = id => {
+        setPosts(posts.filter(post => post.id !== id))
+    }
+
+    return <div>
+        {/* To add new post or edit existing */}
+        {/* Todo: Remove this after completing */}
+        {/* {JSON.stringify(form)} */}
+        <form onSubmit={handleSubmit}>
+            <div>
+                <input type="text" required onChange={e => setForm({ ...form, title: e.target.value })} value={form.title} placeholder="Title" />
+            </div>
+            <div>
+                <textarea placeholder="Body" required onChange={e => setForm({ ...form, body: e.target.value })} value={form.body} />
+            </div>
+            <div>
+                <button type="submit">{isEditing ? 'Update' : 'Add'} Post</button>
+            </div>
+        </form>
+
+        {/* List existing Posts */}
+        <ul>
+            {posts.map(post => {
+                return <li key={post.id}>
+                    <h2>{post.title}</h2>
+                    <p>{post.body}</p>
+                    <button onClick={(e) => {
+                        handleEdit(post)
+                    }}>Edit</button>
+                    <button onClick={(e) => {
+                        handleDelete(post.id)
+                    }}>Delete</button>
+                </li>
+            })}
+        </ul>
+    </div>
+}
+...................................................................................................................................................
+							..............................................................................................
+				Patterns for client and server components
+.............................................................................................
+
+1.Server component uses another Server Component
+   inside layout.js we use page.js
+   inside page.js we use about.jsx 
+
+2.Server component uses client component
+
+3.Client component uses another server component
+
+4.Client component uses another client component
+
+
+2.Server component uses client component
+
+Server:
+
+src/app/reviews/page.js
+import { Like } from './components/like'
+
+export default function ReviewPage() {
+    return <div>
+        <h1>Review Page</h1>
+        <Like />
+    </div>
+}
+
+Client:
+src/app/reviews/components/likes.jsx
+
+'use client'
+import { useState } from "react"
+export const Like = props => {
+    const [value, setValue] = useState(0)
+
+    const onLike = () => {
+        setValue(value + 1)
+    }
+    return <>
+        <h1>Like {value}</h1>
+        <button onClick={onLike}>Like</button>
+    </>
+}
+
+Note:
+ if server uses client, the client component must be marked with "use client" directive
+
+
+...........................................................
+		2.Client component uses another server component
+.........................................................................................................................................................
+
+//server component
+src/app/reviews/components/comments.jsx
+//server component
+export const Comments = ()=> {
+    return <>
+     <h1>Comments  Server Compoent</h1>
+    </>
+}
+
+//client component
+src/app/reviews/components/dislike.jsx
+
+
+'use client'
+
+import { useState } from "react"
+import { Comments } from "./comments"
+
+export const Dislike = ()=> {
+ const [value,setValue]= useState(0)
+ return <>
+     <h1>Dislike-Client Component</h1>
+      <h2>Value  {value}</h2>
+      {/* Server component */}
+      <Comments/>
+ </>
+
+}
+
+src/app/reviews/page.js
+import { Dislike } from './components/dislike'
+
+export default function ReviewPage() {
+    return <div>
+        <h1>Review Page</h1>
+        <Dislike/>
+    </div>
+}
+
+ if client uses another server component,"server component automatically becomes client component"
+
+                 When we use this pattern we loose server rendering.
+
+In the above code comments component runs in the client only.
+
+
+What if "client uses server component" but at the same time, i dont want to loose server rendering feature?
+
+Solution:
+
+  Pass Server Component as Prop to Child  component.
+
+Server:
+src/app/client/components/myserver.jsx
+export default function MyServer(){
+    return <>
+        <h1>Server Compoent</h1>
+    </>
+}
+
+Client
+src/app/client/components/myclient.jsx
+'use client'
+
+export const MyClient = (props) => {
+
+    return <div>
+        <h1>Client Component</h1>
+        {props.children}
+    </div>
+}
+
+
+Page
+src/app/client/page.js
+import { MyClient } from "./components/myclient";
+import MyServer from "./components/myserver";
+
+export default function ClientComponentPage(){
+    return <div>
+            <MyClient>
+                {/* Pass server as prop */}
+                <MyServer/>
+            </MyClient>
+    </div>
+}
+....................................................................................
+		3.Client Compoent uses another client Component
+.....................................................................................
+
+
+Page:
+src/app/counter/page.js
+import Counter from "./components/counter";
+
+export default function CounterPage(){
+    return <div>
+        <h1>Counter Page</h1>
+        <Counter/>
+    </div>
+}
+
+src/app/counter/counter.jsx
+
+'use client'
+
+import Increment from "./increment"
+
+export default function Counter() {
+
+    return <>
+        <h1>Counter Component</h1>
+        <Increment/>
+    </>
+}
+
+src/app/counter/increment.jsx
+
+
+'use client'
+import { useState } from "react"
+
+export default function Increment() {
+  const [value,setValue] = useState(0)
+    return <>
+        <h1>Increment Value {value}</h1>
+    </>
+}
+
+Note :
+
+If client component uses another client component, that another client component no need to use 'use client' directive.
+
+Note :
+
+If client component uses another client component, that another client component no need to use 'use client' directive.
+
+This would be very useful when we use thrid party ui components into next js
+.....................................................................................
+
+Eg:
+How to use react carbon lib
+
+Steps:
+
+1.npm install @carbon/react
+
+2.create client component
+
+src/app/clientcomponents/MyButton.jsx
+'use client'
+
+import { Button } from '@carbon/react';
+
+export function MyButton() {
+    return <>
+        <Button kind="danger">
+            Button
+        </Button>
+
+        <Button kind="danger--tertiary">
+            Tertiary Danger Button
+        </Button>
+
+        <Button kind="danger--ghost">
+            Ghost Danger Button
+        </Button>
+    </>
+}
+
+3.Use that client component inside another client component or server component
+
+import { Counter } from "./components/counter";
+import { MyButton } from "./components/MyButton";
+
+export default function CounterPage(){
+    return <div>
+        <Counter/>
+        <hr/>
+        <MyButton/>
+    </div>
+}
+
+Task:
+ Build simple shopping cart using client components
+
+Features
+1.Loads cart items from localStorage when page loads
+2.Add new Items to the cart dynamically
+3.Removes items with a delete button
+4.saves the cart back to the localStorage whenever it changes
+5.persist data even after page refresh.
 
 
 
