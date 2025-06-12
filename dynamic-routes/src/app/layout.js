@@ -1,3 +1,4 @@
+import Link from "next/link";
 import "./globals.css";
 
 export const metadata = {
@@ -10,6 +11,14 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body
       >
+        <nav>
+          <div>
+            <Link href={{ pathname: `/products` }}>Products</Link>
+          </div>
+          <div>
+            <Link href={{ pathname: `/comments` }}>Comments</Link>
+          </div>
+        </nav>
         {children}
       </body>
     </html>
